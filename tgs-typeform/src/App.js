@@ -1,8 +1,8 @@
-import TypeForm from "./TypeForm";
+import TypeForm from "./TypeForm2";
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <TypeForm />
     </div>
   );

@@ -1,8 +1,8 @@
 import React from "react";
 
-const Form2 = () => {
+const Form2 = ({ style }) => {
   return (
-    <div>
+    <div style={{ ...style }}>
       <h1>Form2</h1>
     </div>
   );
