@@ -1,16 +1,15 @@
 import React from "react";
 import { Grid, Button } from "@mui/material";
-import Form1 from "./Form1";
-import Form2 from "./Form2";
-import Form3 from "./Form3";
+import FormSet from "./FormSet";
+import { questionsSchema } from "./masterConfig";
+import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 const style = {
   height: "100vh",
 };
-const list = [
-  <Form1 style={style} />,
-  <Form2 style={style} />,
-  <Form3 style={style} />,
-];
+
+const list = questionsSchema.map((item, index) => (
+  <FormSet {...item} style={style} />
+));
 
 const SetForm = ({ form }) => {
   return list.map((item, index) => {
@@ -20,7 +19,6 @@ const SetForm = ({ form }) => {
 
 const TypeForm = () => {
   const [form, setForm] = React.useState(0);
-
   const inc = () => {
     setForm(form + 1);
     if (form === 2) {
