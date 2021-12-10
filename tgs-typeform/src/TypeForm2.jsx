@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Button } from "@mui/material";
 import FormSet from "./FormSet";
 import { questionsSchema } from "./masterConfig";
@@ -7,8 +7,12 @@ const style = {
   height: "100vh",
 };
 
+let allAnswers = {};
+const updateData = (id, val) => {
+  allAnswers = { ...allAnswers, [id]: val };
+};
 const list = questionsSchema.map((item, index) => (
-  <FormSet {...item} style={style} />
+  <FormSet {...item} style={style} updateData={updateData} />
 ));
 
 const SetForm = ({ form }) => {
@@ -18,9 +22,7 @@ const SetForm = ({ form }) => {
 };
 
 const TypeForm = () => {
-  
   const [form, setForm] = React.useState(0);
-
   const inc = () => {
     setForm(form + 1);
     if (form === 2) {
@@ -34,7 +36,9 @@ const TypeForm = () => {
       setForm(2);
     }
   };
-
+  useEffect(() => {
+    console.log(allAnswers);
+  }, [allAnswers]);
   return (
     <Grid>
       <Button onClick={inc}>INC</Button>

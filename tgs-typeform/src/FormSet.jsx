@@ -5,8 +5,11 @@ import Rating from "@mui/material/Rating";
 import { atom, useRecoilState } from "recoil";
 import TextField from "@mui/material/TextField";
 
-const BasicRating = ({ style, id, title, required, valueAtom }) => {
+const BasicRating = ({ style, id, title, required, valueAtom, updateData }) => {
   const [value, setValue] = useRecoilState(valueAtom);
+  useEffect(() => {
+    updateData(id, value);
+  }, [value]);
   return (
     <Box
       sx={{
@@ -24,6 +27,7 @@ const BasicRating = ({ style, id, title, required, valueAtom }) => {
     </Box>
   );
 };
+
 const BasicText = ({
   style,
   id,
@@ -32,6 +36,7 @@ const BasicText = ({
   required,
   valueAtom,
   validation,
+  updateData,
 }) => {
   const [value, setValue] = useRecoilState(valueAtom);
   const [error, setError] = React.useState(false);
@@ -39,6 +44,9 @@ const BasicText = ({
   useEffect(() => {
     textRef.current.focus();
   }, []);
+  useEffect(() => {
+    updateData(id, value);
+  }, [value]);
   return (
     <Box
       component="form"
@@ -69,6 +77,7 @@ const BasicText = ({
     </Box>
   );
 };
+
 const FormSet = (props) => {
   const { type, initValue, id } = props;
   const valueAtom = atom({
