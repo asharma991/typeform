@@ -18,7 +18,9 @@ const SetForm = ({ form }) => {
 };
 
 const TypeForm = () => {
+  
   const [form, setForm] = React.useState(0);
+
   const inc = () => {
     setForm(form + 1);
     if (form === 2) {

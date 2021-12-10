@@ -69,7 +69,7 @@ const BasicText = ({
     </Box>
   );
 };
-const Form1 = (props) => {
+const FormSet = (props) => {
   const { type, initValue, id } = props;
   const valueAtom = atom({
     key: id,
@@ -91,4 +91,4 @@ const Form1 = (props) => {
   );
 };
 
-export default Form1;
+export default FormSet;
