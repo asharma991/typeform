@@ -1,10 +1,10 @@
 import React from "react";
-
+import { Grid, Typography, Button } from "@mui/material";
 const Form2 = ({ style }) => {
   return (
-    <div style={{ ...style }}>
-      <h1>Form2</h1>
-    </div>
+    <Grid style={{ ...style }}>
+      <Typography>Form2</Typography>
+    </Grid>
   );
 };
 export default Form2;
