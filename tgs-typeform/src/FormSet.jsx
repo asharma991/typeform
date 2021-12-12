@@ -4,7 +4,10 @@ import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import { useRecoilState } from "recoil";
 import TextField from "@mui/material/TextField";
-import { allValueSet } from "./AtomUtils";
+import { allValueSet, errorSet } from "./AtomUtils";
+import { constants } from "./constants";
+import { validationCheck } from "./commonUtils";
+const defaultError = "Required Field";
 const BasicRating = ({
   style,
   id,
@@ -49,12 +52,20 @@ const BasicText = ({
   placeholder,
   title,
   required,
-  valueAtom,
-  validation,
+  errorMsg,
+  type,
+  regex,
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
-  const [error, setError] = React.useState(false);
+  const [error, setError] = useRecoilState(errorSet);
   const textRef = React.useRef();
+  const validate = (e) => {
+    const isError = required
+      ? !validationCheck(e.target.value, type, regex)
+      : false;
+    setError({ ...error, [id]: isError });
+    textRef.current.focus();
+  };
   useEffect(() => {
     textRef.current.focus();
   }, []);
@@ -70,21 +81,20 @@ const BasicText = ({
       <Typography component="legend">{title}</Typography>
       <TextField
         inputRef={textRef}
-        error={!!error}
+        error={error[id] || false}
         value={value[id] || ""}
         id="filled-basic"
         label="Filled"
         variant="filled"
         onChange={(e) => {
+          validate(e);
           setValue({ ...value, [id]: e.target.value });
         }}
-        onBlur={(e) => {
-          setError(validation(e.target.value));
-          textRef.current.focus();
-        }}
-        required
+        // onBlur={(e) => {
+        //   validate(e);
+        // }}
         placeholder={placeholder}
-        helperText={error}
+        helperText={error[id] ? errorMsg || defaultError : ""}
       />
     </Box>
   );
@@ -100,7 +110,7 @@ const FormSet = (props) => {
           <BasicRating {...props} />
         </>
       )}
-      {type === "text" && (
+      {constants.stringTypeFields.includes(type) && (
         <>
           <BasicText {...props} />
         </>
