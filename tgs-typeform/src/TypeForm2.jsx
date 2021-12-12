@@ -7,6 +7,7 @@ import { makeStyles } from "@mui/styles";
 import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
+import { isError } from "./commonUtils";
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
@@ -98,7 +99,7 @@ const TypeForm = () => {
     console.log("new", e);
     var isEscape = false;
     if ("key" in e) {
-      isEscape = constants.Neavigation.resetKey.includes(e.key);
+      isEscape = constants.Navigation.resetKey.includes(e.key);
     } else {
       isEscape = e.keyCode === 27;
     }
@@ -106,13 +107,15 @@ const TypeForm = () => {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
-    if (constants.Neavigation.forwardKey.includes(e.key)) {
-      inc();
+    if (constants.Navigation.forwardKey.includes(e.key)) {
+      e.preventDefault();
+      !isError(error) && inc();
     }
-    if (e.key === constants.Neavigation.backKey) {
-      dec();
+    if (e.key === constants.Navigation.backKey) {
+      e.preventDefault();
+      !isError(error) && dec();
     }
-    if (e.key === constants.Neavigation.showKey) {
+    if (e.key === constants.Navigation.showKey) {
       show();
     }
   };
@@ -121,14 +124,14 @@ const TypeForm = () => {
       container
       item
       xs={12}
-      justifyContent="center"
-      alignItems="center"
+      justifyContent='center'
+      alignItems='center'
       className={classes.mainContainer}
     >
       <Grid
         item
         container
-        direction="row"
+        direction='row'
         xs={8}
         className={classes.innerContainer}
       >
@@ -147,7 +150,7 @@ const TypeForm = () => {
           item
           container
           xs={12}
-          justifyContent="flex-end"
+          justifyContent='flex-end'
         >
           <Button onClick={show}>{`Show [Tab]`}</Button>
           <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>

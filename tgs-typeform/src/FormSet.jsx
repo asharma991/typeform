@@ -24,6 +24,12 @@ const BasicRating = ({
     if (options.includes(Number(event.key)) && value[id] !== event.key) {
       setRating(Number(event.key));
     }
+    // if (event.key === constants.Navigation.rightKey) {
+    //   options.includes(rating + 1) && setRating(rating + 1);
+    // }
+    // if (event.key === constants.Navigation.leftKey) {
+    //   options.includes(rating - 1) && setRating(rating - 1);
+    // }
   });
   useEffect(() => {
     setValue({ ...value, [id]: rating });
