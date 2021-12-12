@@ -8,7 +8,6 @@ import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 import { isError } from "./commonUtils";
-import { useScrollDirection } from "react-use-scroll-direction";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
