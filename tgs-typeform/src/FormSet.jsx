@@ -1,15 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import TextField from "@mui/material/TextField";
+import { allValueSet } from "./AtomUtils";
+const BasicRating = ({
+  style,
+  id,
+  title,
+  required,
+  valueAtom,
+  options,
+  initValue,
+}) => {
+  const [value, setValue] = useRecoilState(allValueSet);
+  const [rating, setRating] = useState(initValue);
 
-const BasicRating = ({ style, id, title, required, valueAtom, updateData }) => {
-  const [value, setValue] = useRecoilState(valueAtom);
+  document.addEventListener("keypress", function onEvent(event) {
+    if (options.includes(Number(event.key)) && value[id] !== event.key) {
+      setRating(Number(event.key));
+    }
+  });
   useEffect(() => {
-    updateData(id, value);
-  }, [value]);
+    setValue({ ...value, [id]: rating });
+  }, [rating]);
   return (
     <Box
       sx={{
@@ -19,9 +34,9 @@ const BasicRating = ({ style, id, title, required, valueAtom, updateData }) => {
       <Typography component="legend">{title}</Typography>
       <Rating
         name="simple-controlled"
-        value={value}
+        value={rating}
         onChange={(event, newValue) => {
-          setValue(newValue);
+          setRating(newValue);
         }}
       />
     </Box>
@@ -36,17 +51,13 @@ const BasicText = ({
   required,
   valueAtom,
   validation,
-  updateData,
 }) => {
-  const [value, setValue] = useRecoilState(valueAtom);
+  const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = React.useState(false);
   const textRef = React.useRef();
   useEffect(() => {
     textRef.current.focus();
   }, []);
-  useEffect(() => {
-    updateData(id, value);
-  }, [value]);
   return (
     <Box
       component="form"
@@ -59,16 +70,17 @@ const BasicText = ({
       <Typography component="legend">{title}</Typography>
       <TextField
         inputRef={textRef}
-        error={error}
-        value={value}
+        error={!!error}
+        value={value[id] || ""}
         id="filled-basic"
         label="Filled"
         variant="filled"
         onChange={(e) => {
-          setValue(e.target.value);
+          setValue({ ...value, [id]: e.target.value });
         }}
         onBlur={(e) => {
           setError(validation(e.target.value));
+          textRef.current.focus();
         }}
         required
         placeholder={placeholder}
@@ -79,21 +91,18 @@ const BasicText = ({
 };
 
 const FormSet = (props) => {
-  const { type, initValue, id } = props;
-  const valueAtom = atom({
-    key: id,
-    default: initValue,
-  });
+  const { type } = props;
+
   return (
     <Grid style={{ ...props.style }}>
       {type === "rating" && (
         <>
-          <BasicRating {...props} valueAtom={valueAtom} />
+          <BasicRating {...props} />
         </>
       )}
       {type === "text" && (
         <>
-          <BasicText {...props} valueAtom={valueAtom} />
+          <BasicText {...props} />
         </>
       )}
     </Grid>
