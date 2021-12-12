@@ -29,11 +29,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AnswerTab = () => {
+  const value = useRecoilValue(allValueSet);
   return questionsSchema.map((item, index) => {
     return (
       <Grid key={index} xs={12}>
         <h2>{item.title}</h2>
-        <p></p>
+        <p>{value[item.id]}</p>
       </Grid>
     );
   });
@@ -57,7 +58,6 @@ const TypeForm = () => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [form, setForm] = React.useState(0); //Setting the form to the first form
   const [capturedValue, setCapturedValue] = React.useState(false);
-  console.log("allvalue", value);
   //Changing the form
   const inc = () => {
     setForm(form + 1);
@@ -76,22 +76,36 @@ const TypeForm = () => {
   const show = () => {
     setCapturedValue(!capturedValue);
   };
-  document.onkeypress = function (e) {
+
+  const resetFrom = () => {
+    setCapturedValue(false);
+    setValue({});
+    setForm(0);
+  };
+
+  document.onkeydown = function (e) {
     e = e || window.event;
-    if (e.key === "=" || e.key === "+") {
+    console.log("new", e);
+    var isEscape = false;
+    if ("key" in e) {
+      isEscape = e.key === "Escape" || e.key === "Esc";
+    } else {
+      isEscape = e.keyCode === 27;
+    }
+    if (isEscape) {
+      alert("Escape key pressed, Resetting Form");
+      resetFrom();
+    }
+    if (e.key === "Enter" || e.key === "ArrowUp") {
       inc();
     }
-    if (e.key === "Enter") {
-      inc();
-    }
-    if (e.key === "-") {
+    if (e.key === "ArrowDown") {
       dec();
     }
-    if (e.key === "z") {
+    if (e.key === "Tab") {
       show();
     }
   };
-
   return (
     <Grid
       container
@@ -122,9 +136,10 @@ const TypeForm = () => {
           xs={12}
           justifyContent="flex-end"
         >
-          <Button onClick={show}>{`Show [Z]`}</Button>
-          <Button onClick={inc}>{`Next [+]`}</Button>
-          <Button onClick={dec}>{`Prev [-]`}</Button>
+          <Button onClick={show}>{`Show [Tab]`}</Button>
+          <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>
+          <Button onClick={inc}>{`Next [Enter Or ⬆]`}</Button>
+          <Button onClick={dec}>{`Prev [⬇]`}</Button>
         </Grid>
       </Grid>
     </Grid>
