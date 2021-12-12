@@ -1,7 +1,7 @@
 export const constants = {
   Neavigation: {
-    backKey: "ArrowDown",
-    forwardKey: ["ArrowUp", "Enter"],
+    backKey: "ArrowUp",
+    forwardKey: ["ArrowDown", "Enter"],
     resetKey: ["Escape", "Esc"],
     showKey: "Tab",
   },

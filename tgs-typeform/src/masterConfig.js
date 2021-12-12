@@ -6,6 +6,7 @@ export const questionsSchema = [
     placeholder: "John Doe",
     required: true,
     initValue: "",
+    label: "Name",
   },
   {
     id: "2",
@@ -15,6 +16,7 @@ export const questionsSchema = [
     required: true,
     regex: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/,
     initValue: "",
+    label: "Email",
   },
   {
     id: "3",

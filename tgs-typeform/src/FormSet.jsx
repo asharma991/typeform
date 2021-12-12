@@ -34,9 +34,9 @@ const BasicRating = ({
         "& > legend": { mt: 2 },
       }}
     >
-      <Typography component="legend">{title}</Typography>
+      <Typography component='legend'>{title}</Typography>
       <Rating
-        name="simple-controlled"
+        name='simple-controlled'
         value={rating}
         onChange={(event, newValue) => {
           setRating(newValue);
@@ -55,6 +55,7 @@ const BasicText = ({
   errorMsg,
   type,
   regex,
+  label,
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
@@ -71,21 +72,21 @@ const BasicText = ({
   }, []);
   return (
     <Box
-      component="form"
+      component='form'
       sx={{
         "& > :not(style)": { m: 1, width: "25ch" },
       }}
       noValidate
-      autoComplete="off"
+      autoComplete='off'
     >
-      <Typography component="legend">{title}</Typography>
+      <Typography component='legend'>{title}</Typography>
       <TextField
         inputRef={textRef}
         error={error[id] || false}
         value={value[id] || ""}
-        id="filled-basic"
-        label="Filled"
-        variant="filled"
+        id='filled-basic'
+        label={label}
+        variant='filled'
         onChange={(e) => {
           validate(e);
           setValue({ ...value, [id]: e.target.value });
