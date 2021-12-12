@@ -5,7 +5,8 @@ import { questionsSchema } from "./masterConfig";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import { makeStyles } from "@mui/styles";
 import { allValueSet } from "./AtomUtils";
-
+import { constants } from "./constants";
+import LinearProgress from "./LinearProgress";
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
@@ -39,16 +40,18 @@ const AnswerTab = () => {
     );
   });
 };
-
+const getProgress = (step) => {
+  return (step / questionsSchema.length) * 100;
+};
 // Secondary Component
-const SetForm = ({ form, classes }) => {
+const SetForm = ({ step, classes }) => {
   //Coverting the questions to a list of components
   const list = questionsSchema.map((item, index) => (
     <FormSet {...item} classes={classes} />
   ));
 
   return list.map((item, index) => {
-    return form === index ? <Grid key={index}>{item}</Grid> : null;
+    return step === index ? <Grid key={index}>{item}</Grid> : null;
   });
 };
 
@@ -56,20 +59,24 @@ const SetForm = ({ form, classes }) => {
 const TypeForm = () => {
   const classes = useStyles();
   const [value, setValue] = useRecoilState(allValueSet);
-  const [form, setForm] = React.useState(0); //Setting the form to the first form
+  const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
-  //Changing the form
+  //Changing the step
   const inc = () => {
-    setForm(form + 1);
-    if (form === questionsSchema.length - 1) {
-      setForm(0);
+    setStep(step + 1);
+    if (step === questionsSchema.length - 1) {
+      setCapturedValue(!capturedValue);
+    }
+    if (step === questionsSchema.length) {
+      setStep(0);
     }
   };
 
   const dec = () => {
-    setForm(form - 1);
-    if (form === 0) {
-      setForm(questionsSchema.length - 1);
+    capturedValue && setCapturedValue(!capturedValue);
+    setStep(step - 1);
+    if (step === 0) {
+      setStep(questionsSchema.length - 1);
     }
   };
 
@@ -80,7 +87,7 @@ const TypeForm = () => {
   const resetFrom = () => {
     setCapturedValue(false);
     setValue({});
-    setForm(0);
+    setStep(0);
   };
 
   document.onkeydown = function (e) {
@@ -88,7 +95,7 @@ const TypeForm = () => {
     console.log("new", e);
     var isEscape = false;
     if ("key" in e) {
-      isEscape = e.key === "Escape" || e.key === "Esc";
+      isEscape = constants.Neavigation.resetKey.includes(e.key);
     } else {
       isEscape = e.keyCode === 27;
     }
@@ -96,13 +103,13 @@ const TypeForm = () => {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
-    if (e.key === "Enter" || e.key === "ArrowUp") {
+    if (constants.Neavigation.forwardKey.includes(e.key)) {
       inc();
     }
-    if (e.key === "ArrowDown") {
+    if (e.key === constants.Neavigation.backKey) {
       dec();
     }
-    if (e.key === "Tab") {
+    if (e.key === constants.Neavigation.showKey) {
       show();
     }
   };
@@ -122,11 +129,14 @@ const TypeForm = () => {
         xs={8}
         className={classes.innerContainer}
       >
+        <Grid item xs={12}>
+          <LinearProgress progressStep={getProgress(step)} />
+        </Grid>
         <Grid item container xs={12}>
           {capturedValue ? (
             <AnswerTab />
           ) : (
-            <SetForm form={form} classes={classes} />
+            <SetForm step={step} classes={classes} />
           )}
         </Grid>
         <Grid
