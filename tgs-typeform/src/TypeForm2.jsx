@@ -70,6 +70,7 @@ const TypeForm = () => {
       setCapturedValue(!capturedValue);
     }
     if (step === questionsSchema.length) {
+      capturedValue && setCapturedValue(!capturedValue);
       setStep(0);
     }
   };
