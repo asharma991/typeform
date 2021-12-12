@@ -5,24 +5,15 @@ export const questionsSchema = [
     title: "What is your name?",
     placeholder: "John Doe",
     required: true,
-    validation: (value) => {
-      if (value.length < 3) {
-        return "Your name must be at least 3 characters long";
-      }
-    },
     initValue: "",
   },
   {
     id: "2",
-    type: "text",
+    type: "email",
     title: "What is your email?",
     placeholder: "vvinayppokra@gmail.com",
     required: true,
-    validation: (value) => {
-      if (value.length < 3) {
-        return "Your email must be at least 3 characters long";
-      }
-    },
+    regex: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/,
     initValue: "",
   },
   {

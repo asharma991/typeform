@@ -4,7 +4,7 @@ import FormSet from "./FormSet";
 import { questionsSchema } from "./masterConfig";
 import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
 import { makeStyles } from "@mui/styles";
-import { allValueSet } from "./AtomUtils";
+import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 const useStyles = makeStyles((theme) => ({
@@ -59,8 +59,10 @@ const SetForm = ({ step, classes }) => {
 const TypeForm = () => {
   const classes = useStyles();
   const [value, setValue] = useRecoilState(allValueSet);
+  const [error, setError] = useRecoilState(errorSet);
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
+  console.log(value, error);
   //Changing the step
   const inc = () => {
     setStep(step + 1);
@@ -148,8 +150,8 @@ const TypeForm = () => {
         >
           <Button onClick={show}>{`Show [Tab]`}</Button>
           <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>
-          <Button onClick={inc}>{`Next [Enter Or ⬆]`}</Button>
           <Button onClick={dec}>{`Prev [⬇]`}</Button>
+          <Button onClick={inc}>{`Next [Enter Or ⬆]`}</Button>
         </Grid>
       </Grid>
     </Grid>

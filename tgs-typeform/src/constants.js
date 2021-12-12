@@ -5,4 +5,5 @@ export const constants = {
     resetKey: ["Escape", "Esc"],
     showKey: "Tab",
   },
+  stringTypeFields: ["text", "email", "number", "tel", "url", "password"],
 };
