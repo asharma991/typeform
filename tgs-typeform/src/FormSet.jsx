@@ -40,7 +40,9 @@ const BasicRating = ({
         "& > legend": { mt: 2 },
       }}
     >
-      <Typography component='legend'>{title}</Typography>
+      <Typography variant='h2' component='legend'>
+        {title}
+      </Typography>
       <Rating
         name='simple-controlled'
         value={rating}
@@ -80,12 +82,14 @@ const BasicText = ({
     <Box
       component='form'
       sx={{
-        "& > :not(style)": { m: 1, width: "25ch" },
+        "& > :not(style)": { m: 1, width: "50ch" },
       }}
       noValidate
       autoComplete='off'
     >
-      <Typography component='legend'>{title}</Typography>
+      <Typography variant='h2' component='legend'>
+        {title}
+      </Typography>
       <TextField
         inputRef={textRef}
         error={error[id] || false}

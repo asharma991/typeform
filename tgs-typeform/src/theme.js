@@ -63,6 +63,83 @@ const theme = createTheme({
       lineHeight: "22px",
       fontFamily: "Roboto",
     },
+    MuiButton: {
+      // Name of the rule
+      root: {
+        //borderRadius: '20px',
+        color: "#00bcd4",
+        backgroundColor: "#00bcd4",
+        padding: "8px 20px",
+        border: "1px solid #00bcd4",
+        "&:hover": {
+          color: "#00bcd4",
+          backgroundColor: "#00bcd4",
+          padding: "8px 20px",
+          border: "1px solid #00bcd4",
+        },
+        "&:active": {
+          backgroundColor: "#f44336",
+          color: "#00bcd4",
+          border: "1px solid #00bcd4",
+        },
+        textTransform: "none",
+      },
+      outlined: {
+        padding: "8px 20px",
+      },
+      contained: {
+        padding: "8px 20px",
+      },
+      containedPrimary: {
+        color: "#f44336",
+      },
+    },
+    MuiSelect: {
+      root: { color: "#c0c0c0" },
+    },
+    MuiList: {
+      root: { background: "none" },
+    },
+    MuiTextField: {
+      root: {
+        margin: "10px",
+        width: "100%",
+      },
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          //borderRadius: '20px',
+          color: "#fff",
+          backgroundColor: "#00bcd4",
+          padding: "4px 10px",
+          border: "1px solid #00bcd4",
+          margin: "10px",
+          fontSize: "1rem",
+          "&:hover": {
+            color: "#00bcd4",
+            backgroundColor: "#fff",
+            border: "1px solid #00bcd4",
+          },
+          "&:active": {
+            // backgroundColor: "alice blue",
+            color: "black",
+            border: "1px solid #00bcd4",
+          },
+          textTransform: "none",
+        },
+      },
+    },
+    MuiRating: {
+      styleOverrides: {
+        icon: {
+          color: "#00bcd4",
+          fontSize: "100px",
+        },
+      },
+    },
   },
 });
 export default theme;

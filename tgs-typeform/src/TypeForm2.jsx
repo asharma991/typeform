@@ -8,6 +8,8 @@ import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 import { isError } from "./commonUtils";
+import { useScrollDirection } from "react-use-scroll-direction";
+
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
@@ -119,6 +121,17 @@ const TypeForm = () => {
       show();
     }
   };
+
+  // window.addEventListener("wheel", function (e) {
+  //   // console.log("new", e);
+  //   if (e.deltaY > 0) {
+  //     inc();
+  //   }
+  //   if (e.deltaY < 0) {
+  //     dec();
+  //   }
+  // });
+
   return (
     <Grid
       container
