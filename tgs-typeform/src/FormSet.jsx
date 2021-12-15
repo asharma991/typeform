@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import { validationCheck } from "./commonUtils";
+import { useKeyPress } from "./useKeyPressHook";
 const defaultError = "Required Field";
 const BasicRating = ({
   style,
@@ -19,18 +20,21 @@ const BasicRating = ({
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [rating, setRating] = useState(initValue);
-
-  document.addEventListener("keypress", function onEvent(event) {
-    if (options.includes(Number(event.key)) && value[id] !== event.key) {
-      setRating(Number(event.key));
+  console.log(value, rating);
+  const keyPress = useKeyPress();
+  useEffect(() => {
+    if(!keyPress) return;
+    if (options.includes(Number(keyPress)) && value[id] !== keyPress) {
+      setRating(Number(keyPress));
     }
-    // if (event.key === constants.Navigation.rightKey) {
-    //   options.includes(rating + 1) && setRating(rating + 1);
-    // }
-    // if (event.key === constants.Navigation.leftKey) {
-    //   options.includes(rating - 1) && setRating(rating - 1);
-    // }
-  });
+    if (keyPress === constants.Navigation.rightKey) {
+      options.includes(rating + 1) && setRating(rating + 1);
+    }
+    if (keyPress === constants.Navigation.leftKey) {
+      options.includes(rating - 1) && setRating(rating - 1);
+    }
+  }, [keyPress]);
+  
   useEffect(() => {
     setValue({ ...value, [id]: rating });
   }, [rating]);
@@ -40,11 +44,11 @@ const BasicRating = ({
         "& > legend": { mt: 2 },
       }}
     >
-      <Typography variant='h2' component='legend'>
+      <Typography variant="h2" component="legend">
         {title}
       </Typography>
       <Rating
-        name='simple-controlled'
+        name="simple-controlled"
         value={rating}
         onChange={(event, newValue) => {
           setRating(newValue);
@@ -52,7 +56,7 @@ const BasicRating = ({
       />
     </Box>
   );
-};
+};;
 
 const BasicText = ({
   style,

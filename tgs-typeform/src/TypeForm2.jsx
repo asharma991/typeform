@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { Grid, Button } from "@mui/material";
 import FormSet from "./FormSet";
 import { questionsSchema } from "./masterConfig";
-import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { makeStyles } from "@mui/styles";
 import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 import { isError } from "./commonUtils";
-
+import { useKeyPress } from "./useKeyPressHook";
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   innerContainer: {
     backgroundColor: "#fff",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-    height: "50vh",
+    height: "60vh",
     position: "relative",
     padding: theme.spacing(2),
     borderRadius: theme.spacing(1),
@@ -64,7 +64,25 @@ const TypeForm = () => {
   const [error, setError] = useRecoilState(errorSet);
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
-  console.log(value, error);
+  const keyPress = useKeyPress();
+
+  useEffect(() => {
+    if (constants.Navigation.resetKey.includes(keyPress)) {
+      alert("Escape key pressed, Resetting Form");
+      resetFrom();
+    }
+    if (constants.Navigation.forwardKey.includes(keyPress)) {
+      // e.preventDefault();
+      !isError(error) && inc();
+    }
+    if (keyPress === constants.Navigation.backKey) {
+      // e.preventDefault();
+      !isError(error) && dec();
+    }
+    if (keyPress === constants.Navigation.showKey) {
+      show();
+    }
+  }, [keyPress]);
   //Changing the step
   const inc = () => {
     setStep(step + 1);
@@ -95,55 +113,19 @@ const TypeForm = () => {
     setStep(0);
   };
 
-  document.onkeydown = function (e) {
-    e = e || window.event;
-    console.log("new", e);
-    var isEscape = false;
-    if ("key" in e) {
-      isEscape = constants.Navigation.resetKey.includes(e.key);
-    } else {
-      isEscape = e.keyCode === 27;
-    }
-    if (isEscape) {
-      alert("Escape key pressed, Resetting Form");
-      resetFrom();
-    }
-    if (constants.Navigation.forwardKey.includes(e.key)) {
-      e.preventDefault();
-      !isError(error) && inc();
-    }
-    if (e.key === constants.Navigation.backKey) {
-      e.preventDefault();
-      !isError(error) && dec();
-    }
-    if (e.key === constants.Navigation.showKey) {
-      show();
-    }
-  };
-
-  // window.addEventListener("wheel", function (e) {
-  //   // console.log("new", e);
-  //   if (e.deltaY > 0) {
-  //     inc();
-  //   }
-  //   if (e.deltaY < 0) {
-  //     dec();
-  //   }
-  // });
-
   return (
     <Grid
       container
       item
       xs={12}
-      justifyContent='center'
-      alignItems='center'
+      justifyContent="center"
+      alignItems="center"
       className={classes.mainContainer}
     >
       <Grid
         item
         container
-        direction='row'
+        direction="row"
         xs={8}
         className={classes.innerContainer}
       >
@@ -162,7 +144,7 @@ const TypeForm = () => {
           item
           container
           xs={12}
-          justifyContent='flex-end'
+          justifyContent="flex-end"
         >
           <Button onClick={show}>{`Show [Tab]`}</Button>
           <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>
