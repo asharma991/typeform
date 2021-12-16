@@ -19,11 +19,11 @@ const BasicRating = ({
   initValue,
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
-  const [rating, setRating] = useState(initValue);
+  const [rating, setRating] = useState(value[id] || initValue);
   console.log(value, rating);
   const keyPress = useKeyPress();
   useEffect(() => {
-    if(!keyPress) return;
+    if (!keyPress) return;
     if (options.includes(Number(keyPress)) && value[id] !== keyPress) {
       setRating(Number(keyPress));
     }
@@ -34,7 +34,7 @@ const BasicRating = ({
       options.includes(rating - 1) && setRating(rating - 1);
     }
   }, [keyPress]);
-  
+
   useEffect(() => {
     setValue({ ...value, [id]: rating });
   }, [rating]);
@@ -56,7 +56,7 @@ const BasicRating = ({
       />
     </Box>
   );
-};;
+};
 
 const BasicText = ({
   style,
@@ -72,6 +72,7 @@ const BasicText = ({
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
   const textRef = React.useRef();
+  console.log(textRef);
   const validate = (e) => {
     const isError = required
       ? !validationCheck(e.target.value, type, regex)
@@ -84,23 +85,23 @@ const BasicText = ({
   }, []);
   return (
     <Box
-      component='form'
+      component="form"
       sx={{
         "& > :not(style)": { m: 1, width: "50ch" },
       }}
       noValidate
-      autoComplete='off'
+      autoComplete="off"
     >
-      <Typography variant='h2' component='legend'>
+      <Typography variant="h2" component="legend">
         {title}
       </Typography>
       <TextField
         inputRef={textRef}
         error={error[id] || false}
         value={value[id] || ""}
-        id='filled-basic'
+        id="filled-basic"
         label={label}
-        variant='filled'
+        variant="filled"
         onChange={(e) => {
           validate(e);
           setValue({ ...value, [id]: e.target.value });

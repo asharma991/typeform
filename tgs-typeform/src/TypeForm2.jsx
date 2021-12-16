@@ -9,6 +9,7 @@ import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 import { isError } from "./commonUtils";
 import { useKeyPress } from "./useKeyPressHook";
+import { useMouse } from "./useMouseHook";
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   innerContainer: {
     backgroundColor: "#fff",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-    height: "60vh",
+    minHeight: "70vh",
     position: "relative",
     padding: theme.spacing(2),
     borderRadius: theme.spacing(1),
@@ -34,25 +35,47 @@ const useStyles = makeStyles((theme) => ({
 const AnswerTab = () => {
   const value = useRecoilValue(allValueSet);
   return questionsSchema.map((item, index) => {
-    return (
-      <Grid key={index} xs={12}>
-        <h2>{item.title}</h2>
-        <p>{value[item.id]}</p>
-      </Grid>
-    );
+    const { id, title, type } = item;
+    if (type === "multiValue") {
+      return Object.values(item.fields).map((field, index) => {
+        const { id, title, type } = field;
+        return (
+          <Grid key={index} xs={12}>
+            <h2>{title}</h2>
+            <p>{value[id]}</p>
+          </Grid>
+        );
+      });
+    } else {
+      return (
+        <Grid key={index} xs={12}>
+          <h2>{title}</h2>
+          <p>{value[id]}</p>
+        </Grid>
+      );
+    }
   });
 };
-const getProgress = (step) => {
-  return (step / questionsSchema.length) * 100;
-};
-// Secondary Component
-const SetForm = ({ step, classes }) => {
-  //Coverting the questions to a list of components
-  const list = questionsSchema.map((item, index) => (
-    <FormSet {...item} classes={classes} />
-  ));
 
-  return list.map((item, index) => {
+const getProgress = (step, list) => {
+  return (step / list.length) * 100;
+};
+
+// Secondary Component
+const SetForm = ({ step, classes, list }) => {
+  //Coverting the questions to a list of components
+  const List = list.map((item, index) => {
+    const { type } = item;
+    if (type === "multiValue") {
+      return Object.values(item.fields).map((field, index) => (
+        <FormSet {...field} classes={classes} />
+      ));
+    } else {
+      return <FormSet {...item} classes={classes} />;
+    }
+  });
+
+  return List.map((item, index) => {
     return step === index ? <Grid key={index}>{item}</Grid> : null;
   });
 };
@@ -65,24 +88,33 @@ const TypeForm = () => {
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
   const keyPress = useKeyPress();
-
+  let mouse = useMouse();
+  console.log("mouse==", mouse);
   useEffect(() => {
     if (constants.Navigation.resetKey.includes(keyPress)) {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
     if (constants.Navigation.forwardKey.includes(keyPress)) {
-      // e.preventDefault();
       !isError(error) && inc();
     }
     if (keyPress === constants.Navigation.backKey) {
-      // e.preventDefault();
       !isError(error) && dec();
     }
     if (keyPress === constants.Navigation.showKey) {
       show();
     }
   }, [keyPress]);
+
+  useEffect(() => {
+    if (mouse && mouse.split("/").includes("up")) {
+      !isError(error) && inc();
+    }
+    if (mouse && mouse.split("/").includes("down")) {
+      !isError(error) && dec();
+    }
+  }, [mouse]);
+
   //Changing the step
   const inc = () => {
     setStep(step + 1);
@@ -130,13 +162,16 @@ const TypeForm = () => {
         className={classes.innerContainer}
       >
         <Grid item xs={12}>
-          <LinearProgress progressStep={getProgress(step)} />
+          <LinearProgress progressStep={getProgress(step, questionsSchema)} />
         </Grid>
         <Grid item container xs={12}>
           {capturedValue ? (
             <AnswerTab />
           ) : (
-            <SetForm step={step} classes={classes} />
+            <form>
+              {" "}
+              <SetForm step={step} classes={classes} list={questionsSchema} />
+            </form>
           )}
         </Grid>
         <Grid
