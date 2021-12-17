@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, Slide } from "@mui/material";
 import FormSet from "./FormSet";
 import { questionsSchema } from "./masterConfig";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -19,9 +19,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#fff",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
     minHeight: "70vh",
+    height: "100vh",
     position: "relative",
     padding: theme.spacing(2),
     borderRadius: theme.spacing(1),
+    overflow: "hidden",
   },
   buttonBox: {
     position: "absolute",
@@ -40,18 +42,24 @@ const AnswerTab = () => {
       return Object.values(item.fields).map((field, index) => {
         const { id, title, type } = field;
         return (
-          <Grid key={index} xs={12}>
-            <h2>{title}</h2>
-            <p>{value[id]}</p>
-          </Grid>
+          <Slide direction="down" timeout={750} in={value}>
+            {" "}
+            <Grid key={index} xs={12}>
+              <h2>{title}</h2>
+              <p>{value[id]}</p>
+            </Grid>
+          </Slide>
         );
       });
     } else {
       return (
-        <Grid key={index} xs={12}>
-          <h2>{title}</h2>
-          <p>{value[id]}</p>
-        </Grid>
+        <Slide direction="down" timeout={750} in={value}>
+          {" "}
+          <Grid key={index} xs={12}>
+            <h2>{title}</h2>
+            <p>{value[id]}</p>
+          </Grid>
+        </Slide>
       );
     }
   });
@@ -62,7 +70,7 @@ const getProgress = (step, list) => {
 };
 
 // Secondary Component
-const SetForm = ({ step, classes, list }) => {
+const SetForm = ({ step, classes, list, containerRef }) => {
   //Coverting the questions to a list of components
   const List = list.map((item, index) => {
     const { type } = item;
@@ -76,7 +84,18 @@ const SetForm = ({ step, classes, list }) => {
   });
 
   return List.map((item, index) => {
-    return step === index ? <Grid key={index}>{item}</Grid> : null;
+    return step === index ? (
+      <Slide
+        direction="down"
+        timeout={750}
+        in={step === index}
+        // appear={step === index}
+        key={index}
+        container={containerRef.current}
+      >
+        <Grid key={index}>{item}</Grid>
+      </Slide>
+    ) : null;
   });
 };
 
@@ -144,7 +163,7 @@ const TypeForm = () => {
     setValue({});
     setStep(0);
   };
-
+  const containerRef = React.useRef();
   return (
     <Grid
       container
@@ -153,13 +172,15 @@ const TypeForm = () => {
       justifyContent="center"
       alignItems="center"
       className={classes.mainContainer}
+      ref={containerRef}
     >
       <Grid
         item
         container
         direction="row"
-        xs={8}
+        xs={12}
         className={classes.innerContainer}
+        // ref={containerRef}
       >
         <Grid item xs={12}>
           <LinearProgress progressStep={getProgress(step, questionsSchema)} />
@@ -170,7 +191,12 @@ const TypeForm = () => {
           ) : (
             <form>
               {" "}
-              <SetForm step={step} classes={classes} list={questionsSchema} />
+              <SetForm
+                step={step}
+                classes={classes}
+                list={questionsSchema}
+                containerRef={containerRef}
+              />
             </form>
           )}
         </Grid>
