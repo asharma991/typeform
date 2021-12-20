@@ -4,7 +4,7 @@ import FormSet from "./FormSet";
 import { questionsSchema } from "./masterConfig";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { makeStyles } from "@mui/styles";
-import { allValueSet, errorSet } from "./AtomUtils";
+import { allValueSet, errorSet, focusedField } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
 import {
@@ -121,6 +121,7 @@ const TypeForm = () => {
   const classes = useStyles();
   const [value, setValue] = useRecoilState(allValueSet); //Values Answer
   const [error, setError] = useRecoilState(errorSet); //Error
+  const [focused, setFocused] = useRecoilState(focusedField); //Focused Field
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
   const keyPress = useKeyPress(); // Detech Key Press
@@ -136,6 +137,10 @@ const TypeForm = () => {
     if (isFoucsEnabled) {
       currentRef = id;
       inputRefs[id].focus();
+      if (inputRefs[id].value === "") {
+        setError({ ...error, [inputRefs[id].id]: true });
+      }
+      setFocused(inputRefs[id].id);
     }
   };
 
@@ -144,24 +149,15 @@ const TypeForm = () => {
     focusRef(currentRef);
   }, [step]);
 
-  useEffect(() => {
-    console.log("REQ", getRequiredFields(questionsSchema));
-    setError({
-      ...error,
-      ...validateRequiredFields(value, getRequiredFields(questionsSchema)),
-    });
-    console.log("Error", error);
-  }, [value]);
-
   //Key Event handler
-  console.log(isFoucsEnabled, currentRef);
   useEffect(() => {
+    // console.log("error?.[focused]", focused, error?.[`${focused}`]);
     if (constants.Navigation.resetKey.includes(keyPress)) {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
     if (constants.Navigation.forwardKey.includes(keyPress)) {
-      if (!isError(error)) {
+      if (!error?.[focused]) {
         if (isFoucsEnabled) {
           currentRef++;
           inputRefs.length > currentRef && focusRef(currentRef);
@@ -172,14 +168,14 @@ const TypeForm = () => {
       }
     }
     if (keyPress === constants.Navigation.backKey) {
-      if (!isError(error)) {
+      if (!error?.[focused]) {
         if (isFoucsEnabled && currentRef > -1) {
           currentRef--;
           currentRef >= 0 && focusRef(currentRef);
         } else {
           currentRef = -1;
         }
-        !isError(error) && currentRef === -1 && dec();
+        currentRef === -1 && dec();
       }
     }
     if (keyPress === constants.Navigation.showKey) {
@@ -287,6 +283,6 @@ const TypeForm = () => {
       </Grid>
     </Grid>
   );
-};;
+};
 
 export default TypeForm;

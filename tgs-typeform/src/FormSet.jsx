@@ -3,11 +3,11 @@ import { Grid, Typography } from "@mui/material";
 import MuiPhoneNumber from "material-ui-phone-number";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-import { useRecoilState } from "recoil";
+import { useRecoilState , useRecoilValue } from "recoil";
 import TextField from "@mui/material/TextField";
-import { allValueSet, errorSet } from "./AtomUtils";
+import { allValueSet, errorSet, focusedField } from "./AtomUtils";
 import { constants } from "./constants";
-import { validationCheck } from "./commonUtils";
+import { validationCheck, validateFields } from "./commonUtils";
 import { useKeyPress } from "./useKeyPressHook";
 const defaultError = "Required Field";
 const BasicRating = ({
@@ -21,7 +21,6 @@ const BasicRating = ({
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [rating, setRating] = useState(value[id] || initValue);
-  console.log(value, rating);
   const keyPress = useKeyPress();
   useEffect(() => {
     if (!keyPress) return;
@@ -73,16 +72,17 @@ const BasicText = ({
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
-  // const textRef = React.useRef();
-  const validate = (e) => {
-    const isError = !validationCheck(e.target.value, type, regex) && errorMsg;
+  const val = value[id] || initValue;
+  const validate = (e, val) => {
+    const isError =
+      !validationCheck(e?.target?.value || val, type, regex) && errorMsg;
     setError({ ...error, [id]: isError });
-    // textRef.current.focus();
   };
   useEffect(() => {
-    const val = value[id] || initValue;
     setValue({ ...value, [id]: val });
+    required && validate(null, val);
   }, []);
+
   return (
     <Box
       component="form"
@@ -96,7 +96,6 @@ const BasicText = ({
         {title}
       </Typography>
       <TextField
-        // inputRef={textRef}
         error={error[id] || false}
         value={value[id] || ""}
         id={id}
@@ -106,11 +105,9 @@ const BasicText = ({
           validate(e);
           setValue({ ...value, [id]: e.target.value });
         }}
-        // onBlur={(e) => {
-        //   validate(e);
-        // }}
         placeholder={placeholder}
         helperText={error[id]}
+        required={required}
       />
     </Box>
   );
@@ -129,6 +126,9 @@ const MobileField = ({
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
+  const val = value[id] || initValue;
+  const focused = useRecoilValue(focusedField);
+  
   const validate = (val) => {
     const isError = !validationCheck(val, type, regex) && errorMsg;
     setError({ ...error, [id]: isError });
@@ -137,10 +137,13 @@ const MobileField = ({
     validate(val);
     setValue({ ...value, [id]: val });
   };
+
   useEffect(() => {
-    const val = value[id] || initValue;
     setValue({ ...value, [id]: val });
-  }, []);
+    required && validate(val);
+    console.log("validate", value, error);
+  }, [focused]);
+
   return (
     <Box
       component="form"
@@ -163,13 +166,14 @@ const MobileField = ({
         // placeholder={placeholder}
         error={error[id] || false}
         helperText={error[id]}
+        required={required}
       />
     </Box>
   );
 };
 
 const FormSet = (props) => {
-  const { type } = props;
+  const { type, id, initValue = "", required } = props;
   return (
     <Grid style={{ ...props.style }}>
       {type === "rating" && (

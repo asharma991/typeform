@@ -36,7 +36,7 @@ export const questionsSchema = [
         title: "What is your mobile number?",
         placeholder: "+91-9876543210",
         required: true,
-        regex: /^[789]\d{9}$/,
+        regex: /^(\+|00)[1-9][0-9 \-\(\)\.]{11,13}$/,
         initValue: "",
         label: "Mobile",
         errorMsg: "Please enter a valid mobile number",
