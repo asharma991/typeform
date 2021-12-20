@@ -6,5 +6,5 @@ export const allValueSet = atom({
 
 export const errorSet = atom({
   key: "errorSet",
-  default: [],
+  default: {},
 });

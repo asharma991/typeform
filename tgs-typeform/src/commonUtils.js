@@ -1,3 +1,5 @@
+import { constants } from "./constants";
+
 export const validationCheck = (value, type, exp) => {
   const regex = exp || /^[a-zA-Z0-9]*$/;
   return !!value.match(regex);
@@ -26,4 +28,17 @@ export const getRequiredFields = (schema) => {
     }
   });
   return requiredFields;
+};
+
+export const validateRequiredFields = (values, reqFields) => {
+  console.log("values", values);
+  let error = {};
+  reqFields.forEach((field, index) => {
+    if (values.hasOwnProperty(field) && values[field] === "") {
+      console.log(values);
+      error[field] = constants.messages.required;
+    }
+  });
+  console.log("error", error);
+  return error;
 };

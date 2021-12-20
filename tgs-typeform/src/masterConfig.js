@@ -28,6 +28,7 @@ export const questionsSchema = [
         regex: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/,
         initValue: "",
         label: "Email",
+        errorMsg: "Please enter a valid email address",
       },
       Mobile: {
         id: "mobile",
@@ -38,6 +39,7 @@ export const questionsSchema = [
         regex: /^[789]\d{9}$/,
         initValue: "",
         label: "Mobile",
+        errorMsg: "Please enter a valid mobile number",
       },
     },
   },

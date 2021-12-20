@@ -7,7 +7,11 @@ import { makeStyles } from "@mui/styles";
 import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
-import { isError, getRequiredFields } from "./commonUtils";
+import {
+  isError,
+  getRequiredFields,
+  validateRequiredFields,
+} from "./commonUtils";
 import { useKeyPress } from "./useKeyPressHook";
 import { useMouse } from "./useMouseHook";
 const useStyles = makeStyles((theme) => ({
@@ -138,8 +142,16 @@ const TypeForm = () => {
   useEffect(() => {
     currentRef = 0;
     focusRef(currentRef);
-    console.log("REQ", getRequiredFields(questionsSchema));
   }, [step]);
+
+  useEffect(() => {
+    console.log("REQ", getRequiredFields(questionsSchema));
+    setError({
+      ...error,
+      ...validateRequiredFields(value, getRequiredFields(questionsSchema)),
+    });
+    console.log("Error", error);
+  }, [value]);
 
   //Key Event handler
   console.log(isFoucsEnabled, currentRef);
@@ -149,23 +161,26 @@ const TypeForm = () => {
       resetFrom();
     }
     if (constants.Navigation.forwardKey.includes(keyPress)) {
-      if (isFoucsEnabled) {
-        currentRef++;
-        inputRefs.length > currentRef && focusRef(currentRef);
-      } else {
-        currentRef = inputRefs.length;
+      if (!isError(error)) {
+        if (isFoucsEnabled) {
+          currentRef++;
+          inputRefs.length > currentRef && focusRef(currentRef);
+        } else {
+          currentRef = inputRefs.length;
+        }
+        inputRefs.length === currentRef && inc();
       }
-
-      !isError(error) && inputRefs.length === currentRef && inc();
     }
     if (keyPress === constants.Navigation.backKey) {
-      if (isFoucsEnabled && currentRef > -1) {
-        currentRef--;
-        currentRef >= 0 && focusRef(currentRef);
-      } else {
-        currentRef = -1;
+      if (!isError(error)) {
+        if (isFoucsEnabled && currentRef > -1) {
+          currentRef--;
+          currentRef >= 0 && focusRef(currentRef);
+        } else {
+          currentRef = -1;
+        }
+        !isError(error) && currentRef === -1 && dec();
       }
-      !isError(error) && currentRef === -1 && dec();
     }
     if (keyPress === constants.Navigation.showKey) {
       show();
@@ -272,6 +287,6 @@ const TypeForm = () => {
       </Grid>
     </Grid>
   );
-};
+};;
 
 export default TypeForm;

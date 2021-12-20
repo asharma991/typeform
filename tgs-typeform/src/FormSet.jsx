@@ -69,20 +69,19 @@ const BasicText = ({
   type,
   regex,
   label,
+  initValue = "",
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
   // const textRef = React.useRef();
-  // console.log(textRef);
   const validate = (e) => {
-    const isError = required
-      ? !validationCheck(e.target.value, type, regex)
-      : false;
+    const isError = !validationCheck(e.target.value, type, regex) && errorMsg;
     setError({ ...error, [id]: isError });
     // textRef.current.focus();
   };
   useEffect(() => {
-    // textRef.current.focus();
+    const val = value[id] || initValue;
+    setValue({ ...value, [id]: val });
   }, []);
   return (
     <Box
@@ -111,7 +110,7 @@ const BasicText = ({
         //   validate(e);
         // }}
         placeholder={placeholder}
-        helperText={error[id] ? errorMsg || defaultError : ""}
+        helperText={error[id]}
       />
     </Box>
   );
@@ -126,12 +125,22 @@ const MobileField = ({
   type,
   regex,
   label,
+  initValue = "",
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
+  const [error, setError] = useRecoilState(errorSet);
+  const validate = (val) => {
+    const isError = !validationCheck(val, type, regex) && errorMsg;
+    setError({ ...error, [id]: isError });
+  };
   const handleOnChange = (val) => {
-    console.log(val);
+    validate(val);
     setValue({ ...value, [id]: val });
   };
+  useEffect(() => {
+    const val = value[id] || initValue;
+    setValue({ ...value, [id]: val });
+  }, []);
   return (
     <Box
       component="form"
@@ -146,12 +155,14 @@ const MobileField = ({
       </Typography>
       <MuiPhoneNumber
         value={value[id]}
-        handleOnChange={handleOnChange}
+        onChange={handleOnChange}
         defaultCountry={"in"}
         label={label}
         variant="filled"
         id={id}
         // placeholder={placeholder}
+        error={error[id] || false}
+        helperText={error[id]}
       />
     </Box>
   );
