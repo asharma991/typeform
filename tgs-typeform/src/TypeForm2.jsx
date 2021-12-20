@@ -7,7 +7,7 @@ import { makeStyles } from "@mui/styles";
 import { allValueSet, errorSet } from "./AtomUtils";
 import { constants } from "./constants";
 import LinearProgress from "./LinearProgress";
-import { isError } from "./commonUtils";
+import { isError, getRequiredFields } from "./commonUtils";
 import { useKeyPress } from "./useKeyPressHook";
 import { useMouse } from "./useMouseHook";
 const useStyles = makeStyles((theme) => ({
@@ -138,6 +138,7 @@ const TypeForm = () => {
   useEffect(() => {
     currentRef = 0;
     focusRef(currentRef);
+    console.log("REQ", getRequiredFields(questionsSchema));
   }, [step]);
 
   //Key Event handler

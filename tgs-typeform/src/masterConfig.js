@@ -30,7 +30,7 @@ export const questionsSchema = [
         label: "Email",
       },
       Mobile: {
-        id: "234",
+        id: "mobile",
         type: "Mobile",
         title: "What is your mobile number?",
         placeholder: "+91-9876543210",
