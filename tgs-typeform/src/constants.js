@@ -8,4 +8,5 @@ export const constants = {
     leftKey: "ArrowLeft",
   },
   stringTypeFields: ["text", "email", "number", "tel", "url", "password"],
+  disabledFocusFields: ["checkbox", "radio"],
 };

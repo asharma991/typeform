@@ -111,6 +111,7 @@ const SetForm = ({ step, classes, list, containerRef }) => {
 };
 
 let currentRef = 0;
+let isFoucsEnabled = false;
 // Main Component
 const TypeForm = () => {
   const classes = useStyles();
@@ -121,35 +122,48 @@ const TypeForm = () => {
   const keyPress = useKeyPress(); // Detech Key Press
   const containerRef = React.useRef();
   const inputRefs = document.getElementsByTagName("input"); // input focus
-
   let mouse = useMouse();
 
   const focusRef = (id) => {
-    currentRef = id;
-    inputRefs && inputRefs[id].focus();
+    isFoucsEnabled =
+      inputRefs.length &&
+      inputRefs[currentRef]?.type &&
+      !constants.disabledFocusFields.includes(inputRefs[currentRef]?.type);
+    if (isFoucsEnabled) {
+      currentRef = id;
+      inputRefs[id].focus();
+    }
   };
 
   useEffect(() => {
     currentRef = 0;
-    inputRefs && inputRefs[currentRef].focus();
+    focusRef(currentRef);
   }, [step]);
 
   //Key Event handler
+  console.log(isFoucsEnabled, currentRef);
   useEffect(() => {
     if (constants.Navigation.resetKey.includes(keyPress)) {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
     if (constants.Navigation.forwardKey.includes(keyPress)) {
-      currentRef++;
-      inputRefs.length > currentRef && focusRef(currentRef);
+      if (isFoucsEnabled) {
+        currentRef++;
+        inputRefs.length > currentRef && focusRef(currentRef);
+      } else {
+        currentRef = inputRefs.length;
+      }
+
       !isError(error) && inputRefs.length === currentRef && inc();
     }
     if (keyPress === constants.Navigation.backKey) {
-      if (currentRef > -1) {
+      if (isFoucsEnabled && currentRef > -1) {
         currentRef--;
+        currentRef >= 0 && focusRef(currentRef);
+      } else {
+        currentRef = -1;
       }
-      currentRef >= 0 && focusRef(currentRef);
       !isError(error) && currentRef === -1 && dec();
     }
     if (keyPress === constants.Navigation.showKey) {
@@ -186,7 +200,7 @@ const TypeForm = () => {
       setStep(questionsSchema.length - 1);
     }
   };
-//
+  //
   const show = () => {
     setCapturedValue(!capturedValue);
   };

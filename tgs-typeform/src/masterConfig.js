@@ -9,6 +9,14 @@ export const questionsSchema = [
     label: "Name",
   },
   {
+    id: "3",
+    type: "rating",
+    title: "How likely are you to recommend this product to a friend?",
+    required: true,
+    options: [0, 1, 2, 3, 4, 5],
+    initValue: 2,
+  },
+  {
     type: "multiValue",
     fields: {
       email: {
@@ -32,13 +40,5 @@ export const questionsSchema = [
         label: "Mobile",
       },
     },
-  },
-  {
-    id: "3",
-    type: "rating",
-    title: "How likely are you to recommend this product to a friend?",
-    required: true,
-    options: [0, 1, 2, 3, 4, 5],
-    initValue: 2,
   },
 ];
