@@ -109,6 +109,7 @@ const SetForm = ({ step, classes, list, containerRef }) => {
     ) : null;
   });
 };
+
 let currentRef = 0;
 // Main Component
 const TypeForm = () => {
@@ -117,10 +118,8 @@ const TypeForm = () => {
   const [error, setError] = useRecoilState(errorSet); //Error
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
-
   const keyPress = useKeyPress(); // Detech Key Press
   const containerRef = React.useRef();
-
   const inputRefs = document.getElementsByTagName("input"); // input focus
 
   let mouse = useMouse();
@@ -134,6 +133,7 @@ const TypeForm = () => {
     currentRef = 0;
     inputRefs && inputRefs[currentRef].focus();
   }, [step]);
+
   //Key Event handler
   useEffect(() => {
     if (constants.Navigation.resetKey.includes(keyPress)) {
