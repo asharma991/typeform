@@ -14,23 +14,31 @@ const useStyles = makeStyles((theme) => ({
   mainContainer: {
     backgroundColor: "#f5f5f5",
     height: "100vh",
+    overflow: "hidden",
   },
   innerContainer: {
     backgroundColor: "#fff",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-    minHeight: "70vh",
-    height: "100vh",
-    position: "relative",
+    // minHeight: "70vh",
+    height: "90vh",
+    // position: "relative",
     padding: theme.spacing(2),
     borderRadius: theme.spacing(1),
     overflow: "hidden",
   },
   buttonBox: {
-    position: "absolute",
+    position: "fixed",
     bottom: "0",
     backgroundColor: "#dcdcdc",
     left: "0",
     borderRadius: "inherit",
+  },
+  formContainer: {
+    // display: "flex",
+    // flexDirection: "column",
+    // alignItems: "center",
+    // justifyContent: "flex-start",
+    height: "500px",
   },
 }));
 
@@ -72,6 +80,9 @@ const getProgress = (step, list) => {
 // Secondary Component
 const SetForm = ({ step, classes, list, containerRef }) => {
   //Coverting the questions to a list of components
+  const transition = !constants.Navigation.forwardKey.includes(useKeyPress())
+    ? "down"
+    : "up";
   const List = list.map((item, index) => {
     const { type } = item;
     if (type === "multiValue") {
@@ -86,7 +97,7 @@ const SetForm = ({ step, classes, list, containerRef }) => {
   return List.map((item, index) => {
     return step === index ? (
       <Slide
-        direction="down"
+        direction={transition}
         timeout={750}
         in={step === index}
         // appear={step === index}
@@ -98,33 +109,55 @@ const SetForm = ({ step, classes, list, containerRef }) => {
     ) : null;
   });
 };
-
+let currentRef = 0;
 // Main Component
 const TypeForm = () => {
   const classes = useStyles();
-  const [value, setValue] = useRecoilState(allValueSet);
-  const [error, setError] = useRecoilState(errorSet);
+  const [value, setValue] = useRecoilState(allValueSet); //Values Answer
+  const [error, setError] = useRecoilState(errorSet); //Error
   const [step, setStep] = React.useState(0); //Setting the step to the first step
   const [capturedValue, setCapturedValue] = React.useState(false);
-  const keyPress = useKeyPress();
+
+  const keyPress = useKeyPress(); // Detech Key Press
+  const containerRef = React.useRef();
+
+  const inputRefs = document.getElementsByTagName("input"); // input focus
+
   let mouse = useMouse();
-  console.log("mouse==", mouse);
+
+  const focusRef = (id) => {
+    currentRef = id;
+    inputRefs && inputRefs[id].focus();
+  };
+
+  useEffect(() => {
+    currentRef = 0;
+    inputRefs && inputRefs[currentRef].focus();
+  }, [step]);
+  //Key Event handler
   useEffect(() => {
     if (constants.Navigation.resetKey.includes(keyPress)) {
       alert("Escape key pressed, Resetting Form");
       resetFrom();
     }
     if (constants.Navigation.forwardKey.includes(keyPress)) {
-      !isError(error) && inc();
+      currentRef++;
+      inputRefs.length > currentRef && focusRef(currentRef);
+      !isError(error) && inputRefs.length === currentRef && inc();
     }
     if (keyPress === constants.Navigation.backKey) {
-      !isError(error) && dec();
+      if (currentRef > -1) {
+        currentRef--;
+      }
+      currentRef >= 0 && focusRef(currentRef);
+      !isError(error) && currentRef === -1 && dec();
     }
     if (keyPress === constants.Navigation.showKey) {
       show();
     }
   }, [keyPress]);
-
+  //
+  //Mouse Event handler
   useEffect(() => {
     if (mouse && mouse.split("/").includes("up")) {
       !isError(error) && inc();
@@ -133,7 +166,7 @@ const TypeForm = () => {
       !isError(error) && dec();
     }
   }, [mouse]);
-
+  //
   //Changing the step
   const inc = () => {
     setStep(step + 1);
@@ -153,7 +186,7 @@ const TypeForm = () => {
       setStep(questionsSchema.length - 1);
     }
   };
-
+//
   const show = () => {
     setCapturedValue(!capturedValue);
   };
@@ -163,7 +196,7 @@ const TypeForm = () => {
     setValue({});
     setStep(0);
   };
-  const containerRef = React.useRef();
+
   return (
     <Grid
       container
@@ -172,22 +205,31 @@ const TypeForm = () => {
       justifyContent="center"
       alignItems="center"
       className={classes.mainContainer}
-      ref={containerRef}
     >
+      <Grid item xs={12}>
+        <LinearProgress progressStep={getProgress(step, questionsSchema)} />
+      </Grid>
       <Grid
         item
         container
-        direction="row"
+        justifyContent="center"
         xs={12}
         className={classes.innerContainer}
         // ref={containerRef}
       >
-        <Grid item xs={12}>
-          <LinearProgress progressStep={getProgress(step, questionsSchema)} />
-        </Grid>
-        <Grid item container xs={12}>
+        <Grid
+          item
+          container
+          xs={12}
+          // direction="column"
+          alignItems="center"
+          justifyContent="center"
+          className={classes.formContainer}
+          ref={containerRef}
+        >
           {capturedValue ? (
-            <AnswerTab />
+            // <AnswerTab />
+            <h1>Hell</h1>
           ) : (
             <form>
               {" "}
@@ -200,18 +242,18 @@ const TypeForm = () => {
             </form>
           )}
         </Grid>
-        <Grid
-          className={classes.buttonBox}
-          item
-          container
-          xs={12}
-          justifyContent="flex-end"
-        >
-          <Button onClick={show}>{`Show [Tab]`}</Button>
-          <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>
-          <Button onClick={dec}>{`Prev [⬇]`}</Button>
-          <Button onClick={inc}>{`Next [Enter Or ⬆]`}</Button>
-        </Grid>
+      </Grid>
+      <Grid
+        className={classes.buttonBox}
+        item
+        container
+        xs={12}
+        justifyContent="flex-end"
+      >
+        <Button onClick={show}>{`Show [Tab]`}</Button>
+        <Button onClick={resetFrom}>{`Reset [Ecs]`}</Button>
+        <Button onClick={dec}>{`Prev [⬇]`}</Button>
+        <Button onClick={inc}>{`Next [Enter Or ⬆]`}</Button>
       </Grid>
     </Grid>
   );

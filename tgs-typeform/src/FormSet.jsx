@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Typography } from "@mui/material";
+import MuiPhoneNumber from "material-ui-phone-number";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import { useRecoilState } from "recoil";
@@ -71,17 +72,17 @@ const BasicText = ({
 }) => {
   const [value, setValue] = useRecoilState(allValueSet);
   const [error, setError] = useRecoilState(errorSet);
-  const textRef = React.useRef();
-  console.log(textRef);
+  // const textRef = React.useRef();
+  // console.log(textRef);
   const validate = (e) => {
     const isError = required
       ? !validationCheck(e.target.value, type, regex)
       : false;
     setError({ ...error, [id]: isError });
-    textRef.current.focus();
+    // textRef.current.focus();
   };
   useEffect(() => {
-    textRef.current.focus();
+    // textRef.current.focus();
   }, []);
   return (
     <Box
@@ -96,10 +97,10 @@ const BasicText = ({
         {title}
       </Typography>
       <TextField
-        inputRef={textRef}
+        // inputRef={textRef}
         error={error[id] || false}
         value={value[id] || ""}
-        id="filled-basic"
+        id={id}
         label={label}
         variant="filled"
         onChange={(e) => {
@@ -115,15 +116,59 @@ const BasicText = ({
     </Box>
   );
 };
+const MobileField = ({
+  style,
+  id,
+  placeholder,
+  title,
+  required,
+  errorMsg,
+  type,
+  regex,
+  label,
+}) => {
+  const [value, setValue] = useRecoilState(allValueSet);
+  const handleOnChange = (val) => {
+    console.log(val);
+    setValue({ ...value, [id]: val });
+  };
+  return (
+    <Box
+      component="form"
+      sx={{
+        "& > :not(style)": { m: 1, width: "50ch" },
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <Typography variant="h2" component="legend">
+        {title}
+      </Typography>
+      <MuiPhoneNumber
+        value={value[id]}
+        handleOnChange={handleOnChange}
+        defaultCountry={"in"}
+        label={label}
+        variant="filled"
+        id={id}
+        // placeholder={placeholder}
+      />
+    </Box>
+  );
+};
 
 const FormSet = (props) => {
   const { type } = props;
-
   return (
     <Grid style={{ ...props.style }}>
       {type === "rating" && (
         <>
           <BasicRating {...props} />
+        </>
+      )}
+      {type === "Mobile" && (
+        <>
+          <MobileField {...props} />
         </>
       )}
       {constants.stringTypeFields.includes(type) && (
