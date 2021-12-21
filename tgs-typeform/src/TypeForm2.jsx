@@ -137,7 +137,7 @@ const TypeForm = () => {
     if (isFoucsEnabled) {
       currentRef = id;
       inputRefs[id].focus();
-      if (inputRefs[id].value === "") {
+      if (inputRefs[id]?.required && inputRefs[id].value === "") {
         setError({ ...error, [inputRefs[id].id]: true });
       }
       setFocused(inputRefs[id].id);
@@ -214,11 +214,12 @@ const TypeForm = () => {
   }, [mouse]);
   //
 
-  //
+  // Display answer or thank you screen
   const show = () => {
     setCapturedValue(!capturedValue);
   };
 
+  // Reset the form
   const resetFrom = () => {
     setCapturedValue(false);
     setValue({});
@@ -264,7 +265,6 @@ const TypeForm = () => {
             </h1>
           ) : (
             <form>
-              {" "}
               <SetForm
                 step={step}
                 classes={classes}
@@ -289,6 +289,6 @@ const TypeForm = () => {
       </Grid>
     </Grid>
   );
-};
+};;
 
 export default TypeForm;

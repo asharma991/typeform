@@ -7,6 +7,7 @@ export const questionsSchema = [
     required: true,
     initValue: "",
     label: "Name",
+    regex: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
   },
   {
     id: "3",
@@ -24,7 +25,7 @@ export const questionsSchema = [
         type: "email",
         title: "What is your email?",
         placeholder: "vvinayppokra@gmail.com",
-        required: true,
+        required: false,
         regex: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/,
         initValue: "",
         label: "Email",
