@@ -1,6 +1,6 @@
 export const questionsSchema = [
   {
-    id: "1",
+    id: "name",
     type: "text",
     title: "What is your name?",
     placeholder: "John Doe",

@@ -144,6 +144,26 @@ const TypeForm = () => {
     }
   };
 
+  //Changing the step
+  const inc = () => {
+    setStep(step + 1);
+    if (step === questionsSchema.length - 1) {
+      setCapturedValue(!capturedValue);
+    }
+    if (step === questionsSchema.length) {
+      capturedValue && setCapturedValue(!capturedValue);
+      setStep(0);
+    }
+  };
+
+  const dec = () => {
+    capturedValue && setCapturedValue(!capturedValue);
+    setStep(step - 1);
+    if (step === 0) {
+      setStep(questionsSchema.length - 1);
+    }
+  };
+
   useEffect(() => {
     currentRef = 0;
     focusRef(currentRef);
@@ -193,25 +213,7 @@ const TypeForm = () => {
     }
   }, [mouse]);
   //
-  //Changing the step
-  const inc = () => {
-    setStep(step + 1);
-    if (step === questionsSchema.length - 1) {
-      setCapturedValue(!capturedValue);
-    }
-    if (step === questionsSchema.length) {
-      capturedValue && setCapturedValue(!capturedValue);
-      setStep(0);
-    }
-  };
 
-  const dec = () => {
-    capturedValue && setCapturedValue(!capturedValue);
-    setStep(step - 1);
-    if (step === 0) {
-      setStep(questionsSchema.length - 1);
-    }
-  };
   //
   const show = () => {
     setCapturedValue(!capturedValue);
@@ -255,7 +257,11 @@ const TypeForm = () => {
         >
           {capturedValue ? (
             // <AnswerTab />
-            <h1>Hell</h1>
+            <h1>
+              Thank You {value?.["name"] || "Sir"} ☺!
+              <br />
+              Your feedback is importent for Us.
+            </h1>
           ) : (
             <form>
               {" "}
