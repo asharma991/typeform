@@ -9,11 +9,13 @@ import { allValueSet, errorSet, focusedField } from "./AtomUtils";
 import { constants } from "./constants";
 import { validationCheck, validateFields } from "./commonUtils";
 import { useKeyPress } from "./useKeyPressHook";
+
 const defaultError = "Required Field";
+
 const BasicRating = ({
   style,
   id,
-  title,
+  title = "",
   required,
   valueAtom,
   options,
@@ -62,7 +64,7 @@ const BasicText = ({
   style,
   id,
   placeholder,
-  title,
+  title = "",
   required,
   errorMsg,
   type,
@@ -116,7 +118,7 @@ const MobileField = ({
   style,
   id,
   placeholder,
-  title,
+  title = "",
   required,
   errorMsg,
   type,
@@ -128,7 +130,7 @@ const MobileField = ({
   const [error, setError] = useRecoilState(errorSet);
   const val = value[id] || initValue;
   const focused = useRecoilValue(focusedField);
-  
+
   const validate = (val) => {
     const isError = !validationCheck(val, type, regex) && errorMsg;
     setError({ ...error, [id]: isError });
@@ -141,7 +143,6 @@ const MobileField = ({
   useEffect(() => {
     setValue({ ...value, [id]: val });
     required && validate(val);
-    console.log("validate", value, error);
   }, [focused]);
 
   return (

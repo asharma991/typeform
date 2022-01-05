@@ -140,6 +140,9 @@ const TypeForm = () => {
       if (inputRefs[id]?.required && inputRefs[id].value === "") {
         setError({ ...error, [inputRefs[id].id]: true });
       }
+      if (!inputRefs[id]?.required && inputRefs[id].value === "") {
+        setError({ ...error, [inputRefs[id].id]: false });
+      }
       setFocused(inputRefs[id].id);
     }
   };
@@ -163,6 +166,10 @@ const TypeForm = () => {
       setStep(questionsSchema.length - 1);
     }
   };
+
+  useEffect(() => {
+    focusRef(currentRef);
+  }, [value]);
 
   useEffect(() => {
     currentRef = 0;

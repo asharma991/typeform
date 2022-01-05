@@ -25,7 +25,7 @@ export const questionsSchema = [
         type: "email",
         title: "What is your email?",
         placeholder: "vvinayppokra@gmail.com",
-        required: false,
+        required: true,
         regex: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/,
         initValue: "",
         label: "Email",
