@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/typeform/static/css/main.b4174c94.chunk.css",
+    "main.js": "/typeform/static/js/main.f915c8e2.chunk.js",
+    "main.js.map": "/typeform/static/js/main.f915c8e2.chunk.js.map",
+    "runtime-main.js": "/typeform/static/js/runtime-main.fb80f86a.js",
+    "runtime-main.js.map": "/typeform/static/js/runtime-main.fb80f86a.js.map",
+    "static/js/2.013b74f3.chunk.js": "/typeform/static/js/2.013b74f3.chunk.js",
+    "static/js/2.013b74f3.chunk.js.map": "/typeform/static/js/2.013b74f3.chunk.js.map",
+    "index.html": "/typeform/index.html",
+    "static/css/main.b4174c94.chunk.css.map": "/typeform/static/css/main.b4174c94.chunk.css.map",
+    "static/js/2.013b74f3.chunk.js.LICENSE.txt": "/typeform/static/js/2.013b74f3.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fb80f86a.js",
+    "static/js/2.013b74f3.chunk.js",
+    "static/css/main.b4174c94.chunk.css",
+    "static/js/main.f915c8e2.chunk.js"
+  ]
+}
